@@ -1,2 +1,3 @@
 cloudinary
 flask
+gunicorn
