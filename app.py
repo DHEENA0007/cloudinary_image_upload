@@ -4,11 +4,11 @@ import cloudinary.uploader
 from flask import Flask, render_template, request, jsonify
 from cloudinary.utils import cloudinary_url
 
-# Configuration for Cloudinary
-cloudinary.config( 
-    cloud_name="dihlrlise", 
-    api_key="262784859187517", 
-    api_secret="3WjQkfwEpl8WaCrq67-8RrWMH2o",  # Replace with your actual API secret
+# Load Cloudinary credentials from environment variables
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME", "dihlrlise"),  # Default value for testing
+    api_key=os.getenv("CLOUDINARY_API_KEY", "262784859187517"),  # Default value for testing
+    api_secret=os.getenv("CLOUDINARY_API_SECRET", "3WjQkfwEpl8WaCrq67-8RrWMH2o"),  # Default value for testing
     secure=True
 )
 
@@ -45,4 +45,5 @@ def upload_image():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Use host='0.0.0.0' and port from the environment (for cloud platforms)
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
