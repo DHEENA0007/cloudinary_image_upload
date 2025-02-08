@@ -4,57 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloudinary Image Upload</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
     <style>
+        /* Global Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
 
         .container {
             text-align: center;
-            background-color: #fff;
-            padding: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            background-color: #ffffff;
+            padding: 40px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
             color: #333;
+            font-size: 36px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            font-family: 'Roboto Slab', serif;
+            transition: color 0.3s ease;
         }
 
+        h1:hover {
+            color: #2575fc;
+        }
+
+        /* Form and Buttons */
         form {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         input[type="file"] {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            background-color: #f8f8f8;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f7f7f7;
             width: 100%;
-            max-width: 350px;
+            max-width: 360px;
             margin-bottom: 20px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]:focus {
+            outline: none;
+            border: 2px solid #2575fc;
+            box-shadow: 0 0 8px rgba(37, 117, 252, 0.3);
         }
 
         button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #2575fc, #6a11cb);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
+            transition: background 0.3s ease, transform 0.3s ease;
         }
 
         button:hover {
-            background-color: #45a049;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            transform: translateY(-5px);
+        }
+
+        /* Progress Bar and Loading Spinner */
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background-color: #f3f3f3;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #2575fc;
+            width: 0;
+            border-radius: 10px;
+            transition: width 0.3s ease;
         }
 
         .loading {
@@ -72,21 +119,132 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Result Section */
         .result {
-            margin-top: 20px;
+            margin-top: 30px;
             display: none;
-            font-size: 16px;
+            font-size: 18px;
+            color: #333;
+            max-width: 100%;
+            font-weight: 500;
         }
 
         .result a {
-            color: #0066cc;
+            color: #2575fc;
             text-decoration: none;
             font-weight: bold;
             word-wrap: break-word;
+            display: inline-block;
+            margin-top: 10px;
+            max-width: 100%;
+            overflow-wrap: break-word;
+            transition: color 0.3s ease;
         }
 
         .result a:hover {
-            text-decoration: underline;
+            color: #6a11cb;
+        }
+
+        .result h3 {
+            font-size: 20px;
+            color: #444;
+        }
+
+        /* Floating Action Button */
+        .floating-action-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #2575fc;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .floating-action-btn:hover {
+            transform: scale(1.1);
+            background-color: #6a11cb;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content h2 {
+            color: #2575fc;
+        }
+
+        .modal-content p {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .modal-content button {
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .modal-content button:hover {
+            background-color: #6a11cb;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Media Queries */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                max-width: 90%;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            input[type="file"] {
+                font-size: 14px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
         }
 
     </style>
@@ -94,7 +252,7 @@
 <body>
 
     <div class="container">
-        <h1>Upload Image to Cloudinary</h1>
+        <h1>Upload Image to Cloud</h1>
 
         <!-- Image Upload Form -->
         <form id="uploadForm" enctype="multipart/form-data">
@@ -102,6 +260,11 @@
             <br>
             <button type="submit">Upload Image</button>
         </form>
+
+        <!-- Progress Bar -->
+        <div id="progressContainer" class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
 
         <!-- Loading Spinner -->
         <div id="loading" class="loading">
@@ -111,7 +274,19 @@
         <!-- Result Display -->
         <div id="result" class="result">
             <h3>Uploaded Image URL</h3>
-            <a id="uploadedImageLink" href="" target="_blank">Click to view the uploaded image</a>
+            <a id="uploadedImageLink" href="" target="_blank" title="Click to view the uploaded image">Click to view the uploaded image</a>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="floating-action-btn" id="floatingBtn">+</div>
+
+    <!-- Modal for Success Message -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Upload Successful!</h2>
+            <p>Your image has been uploaded successfully. You can view it now.</p>
+            <button id="closeModal">Close</button>
         </div>
     </div>
 
@@ -123,33 +298,59 @@
             let formData = new FormData();
             formData.append('image', document.getElementById('image').files[0]);
 
-            // Show loading message
+            // Show loading message and progress bar
             document.getElementById('loading').style.display = 'block';
+            document.getElementById('progressContainer').style.display = 'block';
 
-            // Send the image to the backend using AJAX
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Hide the loading message
-                document.getElementById('loading').style.display = 'none';
+            // Create a request to upload the file
+            const request = new XMLHttpRequest();
+            request.open('POST', '/upload', true);
 
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                    return;
+            // Update progress bar during upload
+            request.upload.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    const percent = (event.loaded / event.total) * 100;
+                    document.getElementById('progressBar').style.width = percent + '%';
                 }
+            };
 
-                // Show the result and update the URL
-                document.getElementById('result').style.display = 'block';
-                document.getElementById('uploadedImageLink').href = data.uploaded_image;
-                document.getElementById('uploadedImageLink').textContent = data.uploaded_image;
-            })
-            .catch(error => {
+            // Handle response after upload
+            request.onload = function() {
+                // Hide loading message
                 document.getElementById('loading').style.display = 'none';
-                alert('An error occurred while uploading the image.');
-            });
+                
+                if (request.status >= 200 && request.status < 300) {
+                    const data = JSON.parse(request.responseText);
+
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+
+                    // Show the result and update the URL
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('uploadedImageLink').href = data.uploaded_image;
+                    document.getElementById('uploadedImageLink').textContent = data.uploaded_image;
+
+                    // Show modal with success message
+                    document.getElementById('modal').style.display = 'flex';
+                } else {
+                    alert('An error occurred while uploading the image.');
+                }
+            };
+
+            // Send the request with the form data
+            request.send(formData);
+        });
+
+        // Close the modal when the close button is clicked
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('modal').style.display = 'none';
+        });
+
+        // Floating Action Button behavior
+        document.getElementById('floatingBtn').addEventListener('click', function() {
+            document.getElementById('uploadForm').scrollIntoView({behavior: "smooth"});
         });
     </script>
 
